@@ -1,14 +1,14 @@
 import React from 'react';
 import Dice from './Dice';
 import { Grid, Button, Divider, Header } from 'semantic-ui-react';
-import { rollDice, newGame } from '../actions/currentGame';
+import { rollDice, newGame, postScore } from '../actions/currentGame';
 import { connect } from 'react-redux';
 
 class Board extends React.Component {
   state = { gameOver: false };
 
   checkEndGame = () => {
-    let { scores } = this.props;
+    let { scores, dispatch } = this.props;
     let gameOver = true;
 
     scores.map( s => s.score)
@@ -17,8 +17,15 @@ class Board extends React.Component {
         gameOver = false;
     })
 
-    if(gameOver && !this.state.gameOver)
+    if(gameOver && !this.state.gameOver) {
+      let score = this.calcScore();
+      dispatch(postScore(score));
       this.setState({ gameOver });
+    }
+  }
+
+  newGame = () => {
+    this.props.dispatch(newGame(() => this.setState({ gameOver: false })));
   }
 
   calcScore = () => {
@@ -30,10 +37,10 @@ class Board extends React.Component {
   }
 
   render() {
+    const { roll, dice, keep, dispatch } = this.props;
     let maxRoll = roll === 3;
     let disabled = maxRoll ? { disabled: true } : {};
     this.checkEndGame();
-    const { roll, dice, keep, dispatch } = this.props;
     let { gameOver } = this.state;
   
     return (
@@ -43,7 +50,7 @@ class Board extends React.Component {
             gameOver ?
               <Button
                 fluid
-                onClick={() => dispatch(newGame())}
+                onClick={this.newGame}
               >
                 New Game?
               </Button>

@@ -2,7 +2,8 @@ class Api::ScoresController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @scores = Score.order(value: :desc)
+    scores = Score.all_scores.page(params[:page])
+    render json: { total_pages: scores.total_pages, scores: scores }
   end
 
   def create

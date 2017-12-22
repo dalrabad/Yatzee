@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export const rollDice = () => {
   return (dispatch, getState) => {
     let { keep, dice } = getState().currentGame
@@ -34,6 +36,18 @@ export const updateScores = (scores) => {
   return { type: 'UPDATE_SCORES', scores };
 }
 
-export const newGame = () => {
-  return { type: 'NEW_GAME' };
+export const newGame = (callback) => {
+  return dispatch => {
+    dispatch({ type: 'NEW_GAME' });
+    callback();
+  }
+}
+
+export const postScore = (value) => {
+  return dispatch => {
+    axios.post('/api/scores', { score: { value } })
+      .then( res => {
+        dispatch({ type: 'HEADERS', headers: res.headers })
+      })
+  }
 }

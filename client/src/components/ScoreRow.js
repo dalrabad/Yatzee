@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Header } from 'semantic-ui-react';
+import { List, Header } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import { updateScores, resetRoll } from '../actions/currentGame';
 import { singles, addAllDice, staticScore } from '../utils/scoringEngine';
